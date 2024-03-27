@@ -3,6 +3,8 @@ import { useState, createContext } from "react";
 import Axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateProduct from './CreateProduct.js';
+import Swal from 'sweetalert2'
+
 
 // Crear un contexto
 export const ProductContext = createContext();
@@ -38,6 +40,39 @@ function App() {
     });
   }
 
+  const deleteProducto = (val) => {
+
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "No podrás revertir esta acción!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, eliminar!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Axios.delete(`http://localhost:3001/delete/${val.product_id}`).then(() => {
+          getProductos();
+          Swal.fire({
+            title: 'Producto eliminado',
+            text: 'El producto: ' + val.product_name + ' ha sido eliminado exitosamente.',
+            icon: 'success',
+            timer: 5000
+          });
+        }).catch(function (error) {
+          Swal.fire({
+            title: 'Eliminación fallida',
+            text: 'No se pudo eliminar el producto ' + val.product_name + '. Intente de nuevo.',
+            icon: 'error',
+            footer: JSON.parse(JSON.stringify(error)).message,
+            timer: 5000
+          });
+        });
+      }
+    });
+  }
+
   const limpiarCampos = () => {
     setProdName("");
     setProdId("");
@@ -55,7 +90,7 @@ function App() {
     category_id, setCatId,
     model_year, setModYear,
     list_price, setPrice,
-    categoriasList,  marcasList,
+    categoriasList, marcasList,
     limpiarCampos, getProductos,
     getMarcas, getCategorias
   };
@@ -69,7 +104,7 @@ function App() {
         <nav className="navbar bg-body-tertiary">
           <div className="container-fluid">
             <a className="navbar-brand" href="#">
-              <img src="/bici.jpg" alt="Logo" width="30" height="24" className="d-inline-block align-text-top"/>BikeStore
+              <img src="/bici.jpg" alt="Logo" width="30" height="24" className="d-inline-block align-text-top" />BikeStore
             </a>
           </div>
         </nav>
@@ -90,11 +125,11 @@ function App() {
             <h1>Lista de bicicletas</h1>
 
             {/* Botón para listar las bicicletas */}
-            <button type="button" 
-              onClick={()=>{
+            <button type="button"
+              onClick={() => {
                 getProductos();
               }} className="btn btn-primary m-2">
-                Consultar
+              Consultar
             </button>
 
             {/* Tabla para mostrar la información de las bicicletas */}
@@ -110,6 +145,7 @@ function App() {
                   <th scope="col">Marca</th>
                   <th scope="col">Origen</th>
                   <th scope="col">Categoria</th>
+                  <th scope="col">Acciones</th>
                 </tr>
               </thead>
 
@@ -125,6 +161,20 @@ function App() {
                       <td>{val.brand_name}</td>
                       <td>{val.brand_home_country}</td>
                       <td>{val.category_name}</td>
+                      <td>
+                        <div className="btn-group" role="group" aria-label="Basic example">
+                          <button type="button"
+                            //onClick={() => {
+                            //  editProducto(val);
+                            //}}
+                            className="btn btn-info">Editar</button>
+                          <button type="button"
+                            onClick={() => {
+                              deleteProducto(val);
+                            }}
+                            className="btn btn-danger">Eliminar</button>
+                        </div>
+                      </td>
                     </tr>
 
                   })
@@ -140,15 +190,4 @@ function App() {
 
 export default App;
 
-/**
- * <div className="btn-group" role="group" aria-label="Basic example">
-                      <button type="button"
-                      onClick={()=>{
-                        editarEmpleado(val);
-                      }}
-                      className="btn btn-info">Editar</button>
-                      <button type="button" onClick={()=>{
-                        deleteEmple(val);
-                      }} className="btn btn-danger">Eliminar</button>
-                    </div>
- */
+

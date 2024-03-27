@@ -2,6 +2,8 @@ import React from 'react';
 import { useContext, useEffect } from "react";
 import Axios from "axios";
 import { ProductContext } from './App'; // Importar el contexto desde el archivo App.js
+import Swal from 'sweetalert2'
+
 
 function CreateProduct() {
 
@@ -25,15 +27,30 @@ function CreateProduct() {
 
   const verificarCamposCorrectos = () => {
     if (product_name === "" || !category_id || !brand_id || model_year === "" || list_price === "") {
-      alert("Por favor, llene todos los campos.");
+      Swal.fire({
+        title: 'Campos vacíos',
+        text: 'Por favor, llene todos los campos.',
+        icon: 'warning',
+        timer: 5000
+      });
       return false;
     }
     if(model_year<1900 || model_year>2024){
-      alert("Año de modelo inválido. Ingrese uno válido.");
+      Swal.fire({
+        title: 'Valor no válido',
+        text: 'Año de modelo inválido. Ingrese uno válido.',
+        icon: 'warning',
+        timer: 5000
+      });
       return false;
     }
     if(list_price<0){
-      alert("Precio inválido. No puede ser menor a 0.");
+      Swal.fire({
+        title: 'Valor no válido',
+        text: 'Precio inválido. No puede ser menor a 0.',
+        icon: 'warning',
+        timer: 5000
+      });
       return false;
     }
     return true;
@@ -55,9 +72,20 @@ function CreateProduct() {
     }).then(() => {
       getProductos();
       limpiarCampos();
-      alert("Bicicleta añadida correctamente.");
+      Swal.fire({
+        title: 'Registro exitoso',
+        text: 'La bicicleta ' + product_name + ' se añadió correctamente.',
+        icon: 'success',
+        timer: 5000
+      });
     }).catch(function (error) {
-      alert("Sucedió un error al añadir la bicicleta.");
+      Swal.fire({
+        title: 'Registro fallido',
+        text: 'Sucedió un error al añadir la bicicleta ' + product_name + '. Por favor, intente de nuevo.',
+        icon: 'error',
+        footer: JSON.parse(JSON.stringify(error)).message,
+        timer: 5000
+      });
     });
   }
 

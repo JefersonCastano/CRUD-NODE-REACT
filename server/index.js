@@ -13,7 +13,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host:"localhost",
     user:"root",
-    password:"",
+    password:"ingesiss",
     database:"bikes_crud"
 });
 
@@ -75,6 +75,19 @@ app.get("/bikes/brands",(req,res)=>{
         }
     }
     );
+});
+
+// Petición DELETE para eliminar un producto
+app.delete("/delete/:product_id",(req,res)=>{
+    const product_id = req.params.product_id;
+    db.query("DELETE FROM products WHERE product_id = ?",product_id,
+    (err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result);
+        }
+    });
 });
 
 // Iniciar el servidor en el puerto 3001
