@@ -3,6 +3,7 @@ import { useState, createContext } from "react";
 import Axios from "axios";
 import ManageProductData from './ManageProductData.js';
 import ProductList from './ProductList.js';
+import Swal from 'sweetalert2'
 
 // Crear un contexto
 export const ProductContext = createContext();
@@ -25,10 +26,18 @@ function CRUD() {
   const getProductos = () => {
     Axios.get("http://localhost:3001/bikes").then((response) => {
       setProductos(response.data);
+    }).catch(function (error) {
+      Swal.fire({
+        title: 'Consulta fallida',
+        text: 'No se pudo realizar la consulta. Intente de nuevo.',
+        icon: 'error',
+        footer: JSON.parse(JSON.stringify(error)).message,
+        timer: 5000
+      })
     });
   }
 
- // Pasar los estados y la función de limpiar campos al proveedor de contexto
+  // Pasar los estados y la función de limpiar campos al proveedor de contexto
   const contextValue = {
     product_name, setProdName,
     product_id, setProdId,
@@ -37,7 +46,7 @@ function CRUD() {
     model_year, setModYear,
     list_price, setPrice,
     setCategorias, setMarcas,
-    categoriasList,  marcasList,
+    categoriasList, marcasList,
     getProductos, productosList,
     editar, setEditar
   };
