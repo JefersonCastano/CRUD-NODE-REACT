@@ -1,25 +1,25 @@
 import React from 'react';
 import { useContext, useEffect } from "react";
 import Axios from "axios";
-import { ProductContext } from './App'; // Importar el contexto desde el archivo App.js
+import { ProductContext } from './CRUD'; // Importar el contexto desde el archivo CRUD.js
 import Swal from 'sweetalert2'
 
 
-function CreateProduct() {
+function ManageProductData() {
 
   // Utilizar useContext para acceder al contexto
   const {
     product_name, setProdName,
-    product_id,
+    product_id, setProdId,
     brand_id, setBrandId,
     category_id, setCatId,
     model_year, setModYear,
     list_price, setPrice,
-    categoriasList, marcasList,
-    limpiarCampos, getProductos,
-    getMarcas, getCategorias,
-    editar, setEditar
+    setCategorias, setMarcas,
+    categoriasList,  marcasList,
+    getProductos, editar, setEditar
   } = useContext(ProductContext);
+
 
   useEffect(() => {
     getCategorias(); // Llama a getCategorias al montar el componente
@@ -57,6 +57,28 @@ function CreateProduct() {
     return true;
   }
 
+  const limpiarCampos = () => {
+    setProdName("");
+    setProdId("");
+    setBrandId("");
+    setCatId("");
+    setModYear("");
+    setPrice("");
+    setEditar(false);
+  }
+
+  const getCategorias = () => {
+    Axios.get("http://localhost:3001/bikes/categories").then((response) => {
+      setCategorias(response.data);
+    });
+  }
+
+  const getMarcas = () => {
+    Axios.get("http://localhost:3001/bikes/brands").then((response) => {
+      setMarcas(response.data);
+    });
+  }
+
   const addProduct = () => {
 
     if (verificarCamposCorrectos() === false) {
@@ -89,12 +111,12 @@ function CreateProduct() {
       });
     });
   }
-
+  
   const updateProduct = () => {
     if (verificarCamposCorrectos() === false) {
       return;
     }
-    
+
     Axios.put("http://localhost:3001/update", {
       product_name: product_name,
       product_id: product_id,
@@ -212,4 +234,4 @@ function CreateProduct() {
   );
 }
 
-export default CreateProduct;
+export default ManageProductData;
