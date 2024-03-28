@@ -13,7 +13,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host:"localhost",
     user:"root",
-    password:"ingesiss",
+    password:"",
     database:"bikes_crud"
 });
 
@@ -75,6 +75,25 @@ app.get("/bikes/brands",(req,res)=>{
         }
     }
     );
+});
+
+// Petición UPDATE para actualizar un producto
+app.put("/update",(req,res)=>{
+    const product_id = req.body.product_id;
+    const product_name = req.body.product_name;
+    const brand_id = req.body.brand_id;
+    const category_id = req.body.category_id;
+    const model_year = req.body.model_year;
+    const list_price = req.body.list_price;
+    
+    const sqlUpdate = "UPDATE products SET product_name=?, brand_id=?, category_id=?, model_year=?, list_price=? WHERE product_id=?;";
+    db.query(sqlUpdate,[product_name, brand_id, category_id, model_year, list_price, product_id],(err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result);
+        }
+    });
 });
 
 // Petición DELETE para eliminar un producto

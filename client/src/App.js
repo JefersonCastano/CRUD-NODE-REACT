@@ -5,7 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateProduct from './CreateProduct.js';
 import Swal from 'sweetalert2'
 
-
 // Crear un contexto
 export const ProductContext = createContext();
 
@@ -21,6 +20,8 @@ function App() {
   const [productosList, setProductos] = useState([]);
   const [categoriasList, setCategorias] = useState([]);
   const [marcasList, setMarcas] = useState([]);
+
+  const [editar, setEditar] = useState(false);
 
   const getProductos = () => {
     Axios.get("http://localhost:3001/bikes").then((response) => {
@@ -38,6 +39,17 @@ function App() {
     Axios.get("http://localhost:3001/bikes/brands").then((response) => {
       setMarcas(response.data);
     });
+  }
+
+   // Función para editar un producto
+   const editarProducto = (val) => {
+    setEditar(true);
+    setProdName(val.product_name);
+    setProdId(val.product_id);
+    setBrandId(val.brand_id);
+    setCatId(val.category_id);
+    setModYear(val.model_year);
+    setPrice(val.list_price);
   }
 
   const deleteProducto = (val) => {
@@ -67,7 +79,7 @@ function App() {
             icon: 'error',
             footer: JSON.parse(JSON.stringify(error)).message,
             timer: 5000
-          });
+            })
         });
       }
     });
@@ -80,9 +92,10 @@ function App() {
     setCatId("");
     setModYear("");
     setPrice("");
+    setEditar(false);
   }
 
-  // Pasar los estados y la función de limpiar campos al proveedor de contexto
+ // Pasar los estados y la función de limpiar campos al proveedor de contexto
   const contextValue = {
     product_name, setProdName,
     product_id,
@@ -90,9 +103,10 @@ function App() {
     category_id, setCatId,
     model_year, setModYear,
     list_price, setPrice,
-    categoriasList, marcasList,
+    categoriasList,  marcasList,
     limpiarCampos, getProductos,
-    getMarcas, getCategorias
+    getMarcas, getCategorias, 
+    editar, setEditar
   };
 
   return (
@@ -164,9 +178,9 @@ function App() {
                       <td>
                         <div className="btn-group" role="group" aria-label="Basic example">
                           <button type="button"
-                            //onClick={() => {
-                            //  editProducto(val);
-                            //}}
+                            onClick={() => {
+                              editarProducto(val);
+                            }}
                             className="btn btn-info">Editar</button>
                           <button type="button"
                             onClick={() => {
