@@ -96,7 +96,7 @@ function ProductList() {
                             </thead>
 
                             {/* Cuerpo de la tabla */}
-                            <tbody>
+                            <tbody> 
                                 {
                                     productosList.map((val, key) => {
                                         return <tr key={val.product_id}>

@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import CRUD from './CRUD';
+import CRUD from './CRUD_bikes/CRUD';
 
 function App() {
   return (
